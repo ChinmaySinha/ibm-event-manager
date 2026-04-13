@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -7,26 +7,43 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
+  User,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+  user: User | DemoUser | null;
+  loading: boolean;
+  demoMode: boolean;
+  login: (email: string, password: string) => Promise<any>;
+  signup: (email: string, password: string, displayName: string) => Promise<any>;
+  loginWithGoogle: () => Promise<any>;
+  loginAsDemo: () => void;
+  logout: () => Promise<void>;
+}
 
-export function useAuth() {
+interface DemoUser {
+  uid: string;
+  email: string;
+  displayName: string;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 }
 
-// Demo user for offline/demo mode
-const DEMO_USER = {
+const DEMO_USER: DemoUser = {
   uid: 'demo-user-001',
   email: 'demo@ibm-events.com',
   displayName: 'Demo User',
 };
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | DemoUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [demoMode, setDemoMode] = useState(false);
 
@@ -44,38 +61,26 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = async (email, password) => {
-    if (demoMode) {
-      setUser(DEMO_USER);
-      return;
-    }
+  const login = async (email: string, password: string) => {
+    if (demoMode) { setUser(DEMO_USER); return; }
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signup = async (email, password, displayName) => {
-    if (demoMode) {
-      setUser({ ...DEMO_USER, email, displayName });
-      return;
-    }
+  const signup = async (email: string, password: string, displayName: string) => {
+    if (demoMode) { setUser({ ...DEMO_USER, email, displayName }); return; }
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName });
     return cred;
   };
 
   const loginWithGoogle = async () => {
-    if (demoMode) {
-      setUser(DEMO_USER);
-      return;
-    }
+    if (demoMode) { setUser(DEMO_USER); return; }
     const provider = new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
   };
 
   const logout = async () => {
-    if (demoMode) {
-      setUser(null);
-      return;
-    }
+    if (demoMode) { setUser(null); return; }
     return signOut(auth);
   };
 
@@ -84,15 +89,9 @@ export function AuthProvider({ children }) {
     setUser(DEMO_USER);
   };
 
-  const value = {
-    user,
-    loading,
-    demoMode,
-    login,
-    signup,
-    loginWithGoogle,
-    loginAsDemo,
-    logout,
+  const value: AuthContextType = {
+    user, loading, demoMode,
+    login, signup, loginWithGoogle, loginAsDemo, logout,
   };
 
   return (
