@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 interface RsvpToggleProps {
-  value: 'yes' | 'maybe' | 'no';
-  onChange: (val: 'yes' | 'maybe' | 'no') => void;
+  currentStatus: string;
+  onStatusChange: (val: string) => void;
 }
 
 const options: Array<'yes' | 'maybe' | 'no'> = ['yes', 'maybe', 'no'];
@@ -27,7 +27,8 @@ const knobPositions: Record<string, string> = {
   no: 'top-[103px]',
 };
 
-export default function RsvpToggle({ value, onChange }: RsvpToggleProps) {
+export default function RsvpToggle({ currentStatus, onStatusChange }: RsvpToggleProps) {
+  const value = (currentStatus === 'none' || !options.includes(currentStatus as any)) ? 'yes' : currentStatus as 'yes' | 'maybe' | 'no';
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
@@ -51,7 +52,7 @@ export default function RsvpToggle({ value, onChange }: RsvpToggleProps) {
             key={opt}
             className="absolute left-0 w-full h-[33.33%] cursor-pointer z-[1]"
             style={{ top: `${i * 33.33}%` }}
-            onClick={() => onChange(opt)}
+            onClick={() => onStatusChange(opt)}
             onMouseEnter={() => setHovered(opt)}
             onMouseLeave={() => setHovered(null)}
           />
@@ -64,9 +65,9 @@ export default function RsvpToggle({ value, onChange }: RsvpToggleProps) {
           <span
             key={opt}
             className={`text-xs font-semibold cursor-pointer transition-all duration-200 whitespace-nowrap
-              ${value === opt ? 'text-[var(--color-cream)]' : 'text-[var(--color-cream-faint)] hover:text-[var(--color-cream)]'}
+              ${value === opt ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]'}
             `}
-            onClick={() => onChange(opt)}
+            onClick={() => onStatusChange(opt)}
           >
             {labels[opt]}
           </span>

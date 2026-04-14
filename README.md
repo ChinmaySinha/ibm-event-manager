@@ -1,8 +1,8 @@
 # IBM Event Manager
 
-A **premium, glassmorphic event management platform** built with React, TypeScript, Tailwind CSS, and Firebase. Features a stunning dark emerald theme with frosted glass components, animated backgrounds, and a Luma-inspired UI.
+A **premium, glassmorphic event management platform** built with React, TypeScript, Tailwind CSS, and Firebase. Features a stunning **Midnight Indigo** theme with frosted glass components, animated background gradients, and a sleek, Luma-inspired user experience.
 
-![IBM Event Manager](https://img.shields.io/badge/IBM-Event_Manager-0a1f1a?style=for-the-badge&labelColor=c9a84c)
+![IBM Event Manager](https://img.shields.io/badge/IBM-Event_Manager-06091a?style=for-the-badge&labelColor=7c5bf5)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
@@ -12,14 +12,14 @@ A **premium, glassmorphic event management platform** built with React, TypeScri
 
 ## ✨ Features
 
-- **Premium Glassmorphic UI** — Dark emerald theme with frosted glass cards, animated gradient orbs, and gold accents
-- **Authentication** — Email/Password and Google Sign-In via Firebase Auth
-- **Demo Mode** — Try the full app instantly without creating an account or connecting Firebase
-- **Dashboard** — View your events with real-time stats (total events, upcoming, attendees)
-- **Create Event** — Luma-inspired two-column layout with cover image upload, date/time pickers, and event options
-- **Event Details** — Hero image, RSVP toggle (Going / Maybe / Can't Go), and attendee counts
-- **Real-time Updates** — Firestore `onSnapshot` listeners for live data syncing
-- **Responsive Design** — Fully responsive across desktop, tablet, and mobile
+- **Premium Glassmorphic UI** — Deep indigo theme with frosted glass cards, animated teal/violet gradient orbs, and elegant spacing.
+- **Authentication** — Email/Password and Google Sign-In via Firebase Auth.
+- **Demo Mode** — Try the full app instantly without creating an account or connecting Firebase.
+- **Dashboard** — View your events with real-time stats (total events, upcoming, attendees).
+- **Create Event** — Luma-inspired layout with cover image upload, date/time pickers, location toggles, and event options.
+- **Event Details** — Full-width hero image, RSVP toggle (Going / Maybe / Can't Go), and real-time attendee counts.
+- **Real-time Updates** — Firestore `onSnapshot` listeners for live data syncing.
+- **Responsive Design** — Fully responsive across desktop, tablet, and mobile with generous whitespace.
 
 ---
 
@@ -69,22 +69,22 @@ The app will open at **http://localhost:5173**. Click **"Try Demo"** on the logi
 
 ## 🔥 Connect Your Own Firebase
 
-To use your own Firebase backend for persistent data and authentication:
+To use your own Firebase backend for persistent data and authentication, follow these steps:
 
 ### Step 1: Create a Firebase Project
 
 1. Go to the [Firebase Console](https://console.firebase.google.com/)
-2. Click **"Add Project"** and follow the setup wizard
+2. Click **"Add Project"** and follow the setup wizard.
 
 ### Step 2: Enable Services
 
-1. **Authentication** → Sign-in method → Enable **Email/Password** and **Google**
-2. **Firestore Database** → Create database → Start in **test mode** (or use the rules below)
+1. **Authentication** → Sign-in method → Enable **Email/Password** and **Google**.
+2. **Firestore Database** → Create database → Start in **test mode** (or use the rules below).
 
 ### Step 3: Register a Web App
 
-1. In Project Settings (⚙️) → **Add App** → Choose **Web** (</>) 
-2. Register your app and copy the configuration object
+1. In Project Settings (⚙️) → **Add App** → Choose **Web** (`</>`).
+2. Register your app and copy the configuration object.
 
 ### Step 4: Update Firebase Config
 
@@ -106,7 +106,7 @@ const firebaseConfig = {
 
 In the Firebase Console → Firestore → Rules, deploy these rules:
 
-```
+```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -122,7 +122,7 @@ service cloud.firestore {
 
 ### Step 6: Restart & Sign In
 
-Restart your dev server (`npm run dev`) and sign up with email or Google. Your events will now persist in Firestore!
+Restart your dev server (`npm run dev`) and sign up with an email or via Google. Your events and real-time RSVPs will now persist in your own Firestore database!
 
 ---
 
@@ -157,15 +157,15 @@ src/
 
 ## 🎨 Design System
 
-The app uses a custom Tailwind CSS v4 design system defined in `src/index.css`:
+The app utilizes a custom Tailwind CSS v4 design system defined in `src/index.css`. The aesthetic is "Midnight Indigo":
 
 | Token                     | Value        | Usage                          |
 |---------------------------|-------------|--------------------------------|
-| `--color-emerald-deep`    | `#0a1f1a`   | Page backgrounds               |
-| `--color-emerald-medium`  | `#143d30`   | Glass card backgrounds         |
-| `--color-emerald-accent`  | `#2dd4a0`   | Primary accent, links, CTAs    |
-| `--color-gold`            | `#c9a84c`   | Headings, badges, highlights   |
-| `--color-cream`           | `#f5f0e8`   | Body text                      |
+| `--color-bg-deep`         | `#06091a`   | Page backgrounds               |
+| `--color-surface`         | `#0a0f2c`   | Glass card backgrounds         |
+| `--color-accent`          | `#3dd6c8`   | Primary TEAL accent, buttons   |
+| `--color-violet`          | `#7c5bf5`   | Secondary VIOLET gradient hue  |
+| `--color-text-primary`    | `#ffffff`   | Headings                       |
 | Glass effect              | `backdrop-blur-xl` | Frosted panel backgrounds |
 
 ---

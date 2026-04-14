@@ -90,23 +90,23 @@ export default function DashboardPage() {
       <GlassNavbar />
       <AnimatedBackground />
 
-      <div className="min-h-screen pt-16">
+      <div className="min-h-screen pt-28 pb-24">
         <div className="w-full max-w-[1200px] mx-auto px-6">
           {/* Demo banner */}
           {demoMode && (
-            <div className="mt-8 mb-0 bg-gradient-to-r from-[rgba(45,212,160,0.1)] to-[rgba(201,168,76,0.08)] border border-[rgba(45,212,160,0.2)] rounded-xl py-3 px-5 text-center text-sm text-[var(--color-cream-muted)]">
-              🚀 <strong>Demo Mode</strong> — You're viewing sample data. Connect Firebase to go live!
+            <div className="mb-8 bg-gradient-to-r from-[rgba(61,214,200,0.06)] to-[rgba(124,91,245,0.05)] border border-[rgba(61,214,200,0.12)] rounded-2xl py-4 px-6 text-center text-sm text-[var(--color-text-secondary)]">
+              🚀 <strong className="text-[var(--color-text-primary)]">Demo Mode</strong> — You're viewing sample data. Connect Firebase to go live!
             </div>
           )}
 
           {/* Header */}
-          <div className="pt-10 pb-6 animate-[fadeIn_0.6s_ease_forwards]">
+          <div className="pb-10 animate-[fadeIn_0.6s_ease_forwards]">
             <div className="flex items-center justify-between gap-6 flex-wrap">
               <div>
-                <h1 className="font-[var(--font-serif)] text-3xl font-bold mb-1">
+                <h1 className="font-[var(--font-serif)] text-3xl md:text-4xl font-bold mb-2">
                   {getGreeting()}, {(user as any)?.displayName || 'there'} 👋
                 </h1>
-                <p className="text-sm text-[var(--color-cream-faint)]">Here's what's happening with your events.</p>
+                <p className="text-sm text-[var(--color-text-tertiary)]">Here's what's happening with your events.</p>
               </div>
               <Link to="/create" className="glass-button glass-button-primary no-underline">
                 <Plus size={18} /> Create Event
@@ -114,24 +114,24 @@ export default function DashboardPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-10">
               {[
                 { value: events.length, label: 'Total Events' },
                 { value: events.filter(e => new Date(e.date) >= new Date()).length, label: 'Upcoming' },
                 { value: totalAttendees, label: 'Total Attendees' },
               ].map((s, i) => (
-                <GlassCard key={i} className="p-6 text-center">
-                  <div className="font-[var(--font-serif)] text-4xl font-extrabold bg-gradient-to-r from-[var(--color-emerald-accent)] to-[var(--color-gold)] bg-clip-text text-transparent">
+                <GlassCard key={i} className="py-7 px-6 text-center">
+                  <div className="font-[var(--font-serif)] text-4xl font-extrabold bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-violet)] bg-clip-text text-transparent">
                     {s.value}
                   </div>
-                  <div className="text-xs text-[var(--color-cream-faint)] uppercase tracking-widest mt-1">{s.label}</div>
+                  <div className="text-[0.7rem] text-[var(--color-text-tertiary)] uppercase tracking-widest mt-2">{s.label}</div>
                 </GlassCard>
               ))}
             </div>
           </div>
 
           {/* Section header */}
-          <div className="flex items-center justify-between mt-10 mb-6">
+          <div className="flex items-center justify-between mt-4 mb-8">
             <h2 className="font-[var(--font-serif)] text-xl font-semibold">Your Events</h2>
           </div>
 
@@ -139,14 +139,14 @@ export default function DashboardPage() {
           {loading ? (
             <div className="flex items-center justify-center min-h-[40vh]"><div className="spinner" /></div>
           ) : events.length === 0 ? (
-            <GlassCard className="text-center py-16 px-6">
-              <div className="text-5xl mb-6 opacity-25">📅</div>
-              <h3 className="font-[var(--font-serif)] mb-2">No events yet</h3>
-              <p className="text-[var(--color-cream-faint)] mb-7">Create your first event and start inviting guests!</p>
+            <GlassCard className="text-center py-20 px-6">
+              <div className="text-5xl mb-6 opacity-20">📅</div>
+              <h3 className="font-[var(--font-serif)] mb-3">No events yet</h3>
+              <p className="text-[var(--color-text-tertiary)] mb-8">Create your first event and start inviting guests!</p>
               <Link to="/create" className="glass-button glass-button-primary no-underline"><Plus size={18} /> Create Your First Event</Link>
             </GlassCard>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
               {events.map((event, idx) => {
                 const dateInfo = formatDate(event.date);
                 const rsvps = event.rsvps || {};
@@ -157,28 +157,28 @@ export default function DashboardPage() {
                   <Link key={event.id} to={`/event/${event.id}`} className="no-underline text-inherit">
                     <GlassCard
                       className="overflow-hidden animate-[fadeIn_0.5s_ease_forwards] opacity-0 group"
-                      style={{ animationDelay: `${idx * 0.06}s` }}
+                      style={{ animationDelay: `${idx * 0.08}s` }}
                     >
                       {/* Cover */}
-                      <div className="h-44 bg-gradient-to-br from-[rgba(45,212,160,0.12)] to-[rgba(201,168,76,0.08)] relative overflow-hidden">
+                      <div className="h-48 bg-gradient-to-br from-[rgba(61,214,200,0.06)] to-[rgba(124,91,245,0.05)] relative overflow-hidden">
                         {event.coverUrl && (
                           <img src={event.coverUrl} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
                         )}
-                        <div className="absolute top-3.5 right-3.5 px-3 py-1.5 bg-black/55 backdrop-blur-sm rounded-lg text-center">
-                          <div className="text-[0.6rem] uppercase tracking-wider text-[var(--color-emerald-accent)] font-semibold">{dateInfo.month}</div>
-                          <div className="text-xl font-extrabold font-[var(--font-serif)] leading-none">{dateInfo.day}</div>
+                        <div className="absolute top-4 right-4 px-3 py-2 bg-black/55 backdrop-blur-sm rounded-xl text-center">
+                          <div className="text-[0.6rem] uppercase tracking-wider text-[var(--color-accent-light)] font-semibold">{dateInfo.month}</div>
+                          <div className="text-xl font-extrabold font-[var(--font-serif)] leading-none text-white">{dateInfo.day}</div>
                         </div>
                       </div>
 
                       {/* Body */}
-                      <div className="px-5 pt-4 pb-2">
-                        <h3 className="font-[var(--font-serif)] text-lg font-semibold mb-2 line-clamp-2">{event.title}</h3>
-                        <div className="flex flex-col gap-1 text-xs text-[var(--color-cream-faint)]">
+                      <div className="px-6 pt-5 pb-3">
+                        <h3 className="font-[var(--font-serif)] text-lg font-semibold mb-3 line-clamp-2">{event.title}</h3>
+                        <div className="flex flex-col gap-2 text-xs text-[var(--color-text-tertiary)]">
                           {event.location && (
-                            <span className="flex items-center gap-1.5"><MapPin size={13} className="opacity-50" /> {event.location}</span>
+                            <span className="flex items-center gap-2"><MapPin size={13} className="opacity-50" /> {event.location}</span>
                           )}
                           {event.startTime && (
-                            <span className="flex items-center gap-1.5">
+                            <span className="flex items-center gap-2">
                               <Clock size={13} className="opacity-50" />
                               {formatTime(event.startTime)}{event.endTime && ` — ${formatTime(event.endTime)}`}
                             </span>
@@ -187,22 +187,22 @@ export default function DashboardPage() {
                       </div>
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between px-5 pt-2 pb-4">
+                      <div className="flex items-center justify-between px-6 pt-3 pb-5">
                         <div className="flex items-center">
                           {yesCount > 0 && (
                             <>
                               {[...Array(Math.min(yesCount, 3))].map((_, i) => (
-                                <div key={i} className="w-6 h-6 rounded-full border-2 border-[var(--color-emerald-deep)] bg-gradient-to-br from-[var(--color-gold)] to-[var(--color-gold-dark)] flex items-center justify-center text-[0.55rem] font-bold -ml-1.5 first:ml-0" />
+                                <div key={i} className="w-7 h-7 rounded-full border-2 border-[var(--color-bg-deep)] bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-violet)] flex items-center justify-center text-[0.55rem] font-bold -ml-2 first:ml-0 text-[#06091a]" />
                               ))}
-                              <span className="text-xs text-[var(--color-cream-faint)] ml-2">{yesCount} going</span>
+                              <span className="text-xs text-[var(--color-text-tertiary)] ml-2.5">{yesCount} going</span>
                             </>
                           )}
                         </div>
                         {userRsvp && (
-                          <span className={`px-2.5 py-1 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide border ${
-                            userRsvp === 'yes' ? 'bg-emerald-500/12 text-emerald-400 border-emerald-500/20' :
-                            userRsvp === 'maybe' ? 'bg-amber-500/12 text-amber-400 border-amber-500/20' :
-                            'bg-red-500/12 text-red-400 border-red-500/20'
+                          <span className={`px-3 py-1.5 rounded-full text-[0.65rem] font-semibold uppercase tracking-wide border ${
+                            userRsvp === 'yes' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                            userRsvp === 'maybe' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                            'bg-red-500/10 text-red-400 border-red-500/20'
                           }`}>
                             {userRsvp === 'yes' ? 'Going' : userRsvp === 'maybe' ? 'Maybe' : 'Not Going'}
                           </span>
