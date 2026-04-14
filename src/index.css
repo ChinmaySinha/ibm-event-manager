@@ -85,13 +85,6 @@
 }
 
 /* ---------- Base / Reset ---------- */
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 html {
   scroll-behavior: smooth;
@@ -132,6 +125,7 @@ a:hover { color: var(--color-accent); }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
 
 /* ---------- Glass Utilities ---------- */
+@layer components {
 .glass {
   background: var(--color-glass-bg);
   backdrop-filter: blur(28px);
@@ -296,4 +290,5 @@ a:hover { color: var(--color-accent); }
   color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
 }

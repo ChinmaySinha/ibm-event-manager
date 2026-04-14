@@ -14,11 +14,11 @@ A **premium, glassmorphic event management platform** built with React, TypeScri
 
 - **Premium Glassmorphic UI** — Deep indigo theme with frosted glass cards, animated teal/violet gradient orbs, and elegant spacing.
 - **Authentication** — Email/Password and Google Sign-In via Firebase Auth.
-- **Demo Mode** — Try the full app instantly without creating an account or connecting Firebase.
+- **Demo Mode w/ Local Storage** — Try the full app instantly! Your test events are intelligently saved and loaded from browser `localStorage` when bypassing Firebase.
 - **Dashboard** — View your events with real-time stats (total events, upcoming, attendees).
-- **Create Event** — Luma-inspired layout with cover image upload, date/time pickers, location toggles, and event options.
+- **Create Event** — Luma-inspired layout with robust state handling (e.g. seamless multi-day end date synchronization), native inline location inputs, and conditional event options.
 - **Event Details** — Full-width hero image, RSVP toggle (Going / Maybe / Can't Go), and real-time attendee counts.
-- **Real-time Updates** — Firestore `onSnapshot` listeners for live data syncing.
+- **Real-time Updates** — Firestore `onSnapshot` listeners for live data syncing across active clients.
 - **Responsive Design** — Fully responsive across desktop, tablet, and mobile with generous whitespace.
 
 ---

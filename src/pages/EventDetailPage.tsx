@@ -31,16 +31,23 @@ export default function EventDetailPage() {
   const isDemoEvent = id?.startsWith('demo');
 
   useEffect(() => {
-    if (demoMode || isDemoEvent) {
-      setEvent({ ...DEMO_EVENT, id: id || 'demo-1' });
+    const handleDemoEvent = () => {
+      const existingStr = localStorage.getItem('demo_events');
+      const localEvents = existingStr ? JSON.parse(existingStr) : [];
+      const found = localEvents.find((e: any) => e.id === id);
+      setEvent(found || { ...DEMO_EVENT, id: id || 'demo-1' });
       setLoading(false);
+    };
+
+    if (demoMode || isDemoEvent) {
+      handleDemoEvent();
       return;
     }
     const ref = doc(db, 'events', id!);
     const unsub = onSnapshot(ref, (snap) => {
       if (snap.exists()) { setEvent({ id: snap.id, ...snap.data() } as EventData); }
       setLoading(false);
-    }, () => { setEvent({ ...DEMO_EVENT, id: id || 'demo-1' }); setLoading(false); });
+    }, () => { handleDemoEvent(); });
     return unsub;
   }, [id, demoMode, isDemoEvent]);
 

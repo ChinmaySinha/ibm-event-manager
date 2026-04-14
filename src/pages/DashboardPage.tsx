@@ -48,15 +48,22 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (demoMode) { setEvents(DEMO_EVENTS); setLoading(false); return; }
+    const handleDemoEvents = () => {
+      const existingStr = localStorage.getItem('demo_events');
+      const localEvents = existingStr ? JSON.parse(existingStr) : [];
+      setEvents([...localEvents, ...DEMO_EVENTS]);
+      setLoading(false);
+    };
+
+    if (demoMode) { handleDemoEvents(); return; }
     try {
       const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const evts = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as EventData));
         setEvents(evts); setLoading(false);
-      }, (err) => { console.warn('Firestore error:', err); setEvents(DEMO_EVENTS); setLoading(false); });
+      }, (err) => { console.warn('Firestore error:', err); handleDemoEvents(); });
       return unsubscribe;
-    } catch (err) { console.warn('Firestore not available'); setEvents(DEMO_EVENTS); setLoading(false); }
+    } catch (err) { console.warn('Firestore not available'); handleDemoEvents(); }
   }, [demoMode]);
 
   const formatDate = (dateStr: string) => {

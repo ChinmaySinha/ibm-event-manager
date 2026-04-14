@@ -13,7 +13,7 @@ export default function CreateEventPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    title: '', description: '', date: '', startTime: '', endTime: '',
+    title: '', description: '', date: '', endDate: '', startTime: '', endTime: '',
     location: '', locationType: 'in-person' as const,
     coverUrl: '', maxAttendees: '', ticketPrice: 'Free',
     requireApproval: false, visibility: 'public' as const,
@@ -27,14 +27,29 @@ export default function CreateEventPage() {
     setLoading(true);
 
     if (demoMode) {
+      const demoId = `demo-${Date.now()}`;
+      const newEvent = {
+        ...form,
+        id: demoId,
+        endDate: form.endDate || form.date,
+        maxAttendees: form.maxAttendees ? parseInt(form.maxAttendees) : null,
+        hostId: (user as any).uid,
+        hostName: (user as any).displayName || (user as any).email,
+        rsvps: {},
+        createdAt: new Date().toISOString(),
+      };
+      const existingStr = localStorage.getItem('demo_events');
+      const existing = existingStr ? JSON.parse(existingStr) : [];
+      localStorage.setItem('demo_events', JSON.stringify([newEvent, ...existing]));
       setLoading(false);
-      navigate(`/event/demo-${Date.now()}`);
+      navigate(`/event/${demoId}`);
       return;
     }
 
     try {
       const docRef = await addDoc(collection(db, 'events'), {
         ...form,
+        endDate: form.endDate || form.date,
         maxAttendees: form.maxAttendees ? parseInt(form.maxAttendees) : null,
         hostId: (user as any).uid,
         hostName: (user as any).displayName || (user as any).email,
@@ -132,7 +147,10 @@ export default function CreateEventPage() {
                 <div className="flex items-center gap-4 px-5 py-4">
                   <div className="w-3 h-3 rounded-full bg-[var(--color-accent)] shadow-[0_0_10px_rgba(61,214,200,0.4)] shrink-0" />
                   <span className="text-sm font-medium text-[var(--color-text-secondary)] min-w-10">Start</span>
-                  <input type="date" className="glass-input-boxed flex-1" value={form.date} onChange={(e) => update('date', e.target.value)} required />
+                  <input type="date" className="glass-input-boxed flex-1" value={form.date} onChange={(e) => {
+                    update('date', e.target.value);
+                    if (!form.endDate) update('endDate', e.target.value);
+                  }} required />
                   <input type="time" className="glass-input-boxed w-[100px]" value={form.startTime} onChange={(e) => update('startTime', e.target.value)} />
                   <div className="ml-auto flex items-center gap-2 text-[var(--color-text-tertiary)] text-xs shrink-0">
                     <Globe size={14} className="opacity-40" />
@@ -146,7 +164,7 @@ export default function CreateEventPage() {
                 <div className="flex items-center gap-4 px-5 py-4">
                   <div className="w-3 h-3 rounded-full border-2 border-[var(--color-text-tertiary)] shrink-0" />
                   <span className="text-sm font-medium text-[var(--color-text-secondary)] min-w-10">End</span>
-                  <input type="date" className="glass-input-boxed flex-1" value={form.date} readOnly tabIndex={-1} />
+                  <input type="date" className="glass-input-boxed flex-1" value={form.endDate || form.date} min={form.date} onChange={(e) => update('endDate', e.target.value)} />
                   <input type="time" className="glass-input-boxed w-[100px]" value={form.endTime} onChange={(e) => update('endTime', e.target.value)} />
                 </div>
               </GlassCard>
@@ -154,20 +172,17 @@ export default function CreateEventPage() {
               {/* Location */}
               <GlassCard
                 hoverable={false}
-                className="flex items-center gap-4 px-5 py-5 cursor-pointer"
-                onClick={() => {
-                  const loc = prompt(
-                    form.locationType === 'virtual' ? 'Enter meeting link:' : 'Enter venue address:',
-                    form.location
-                  );
-                  if (loc !== null) update('location', loc);
-                }}
+                className="flex items-center gap-4 px-5 py-5"
               >
                 <MapPin size={18} className="text-[var(--color-text-tertiary)] shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                    {form.location || 'Add Event Location'}
-                  </div>
+                  <input
+                    type="text"
+                    className="bg-transparent border-none text-sm font-medium text-[var(--color-text-primary)] w-full outline-none placeholder:text-[var(--color-text-primary)] truncate"
+                    placeholder={form.locationType === 'virtual' ? 'Enter meeting link...' : 'Enter venue address...'}
+                    value={form.location}
+                    onChange={(e) => update('location', e.target.value)}
+                  />
                   <div className="text-xs text-[var(--color-text-tertiary)] mt-1">Offline location or virtual link</div>
                 </div>
                 <select
@@ -176,9 +191,9 @@ export default function CreateEventPage() {
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => update('locationType', e.target.value)}
                 >
-                  <option value="in-person">In-Person</option>
-                  <option value="virtual">Virtual</option>
-                  <option value="hybrid">Hybrid</option>
+                  <option className="bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)]" value="in-person">In-Person</option>
+                  <option className="bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)]" value="virtual">Virtual</option>
+                  <option className="bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)]" value="hybrid">Hybrid</option>
                 </select>
               </GlassCard>
 
@@ -201,7 +216,13 @@ export default function CreateEventPage() {
                 <div className="flex items-center gap-4 px-5 py-4">
                   <Ticket size={17} className="text-[var(--color-text-tertiary)] shrink-0" />
                   <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">Ticket Price</span>
-                  <span className="text-sm text-[var(--color-text-tertiary)] font-medium">{form.ticketPrice}</span>
+                  <input
+                    type="text"
+                    className="bg-transparent border-none text-right text-[var(--color-text-primary)] font-[var(--font-sans)] text-sm font-medium outline-none w-24 placeholder:text-[var(--color-text-tertiary)]"
+                    placeholder="Free"
+                    value={form.ticketPrice}
+                    onChange={(e) => update('ticketPrice', e.target.value)}
+                  />
                 </div>
                 <div className="h-px bg-white/[0.04] mx-5" />
                 <div className="flex items-center gap-4 px-5 py-4">
